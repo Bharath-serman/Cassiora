@@ -1,0 +1,354 @@
+{
+  "dsa": [
+    {
+      "question": "Which data structure is used in the implementation of recursion?",
+      "options": { "a": "Queue", "b": "Stack", "c": "Linked List", "d": "Tree" },
+      "answer": "b",
+      "explanation": "Stack is used to store function calls in recursion.",
+      "company": "Amazon"
+    },
+    {
+      "question": "What is the time complexity of searching for an element in a balanced binary search tree?",
+      "options": { "a": "O(1)", "b": "O(log n)", "c": "O(n)", "d": "O(n log n)" },
+      "answer": "b",
+      "explanation": "A balanced BST has height log n, so search is O(log n).",
+      "company": "Google"
+    },
+    {
+      "question": "Which sorting algorithm is considered the fastest for large datasets and is used in the C++ STL sort() function?",
+      "options": { "a": "Bubble Sort", "b": "Quick Sort", "c": "Heap Sort", "d": "Merge Sort" },
+      "answer": "d",
+      "explanation": "STL sort uses IntroSort, which is a hybrid of Quick, Heap, and Merge Sort.",
+      "company": "Microsoft"
+    },
+    {
+      "question": "Which data structure is best suited for implementing LRU cache?",
+      "options": { "a": "Array", "b": "Stack", "c": "HashMap + Doubly Linked List", "d": "Queue" },
+      "answer": "c",
+      "explanation": "HashMap for O(1) access, Doubly Linked List for O(1) removal/insertion.",
+      "company": "Flipkart"
+    },
+    {
+      "question": "What is the output of the following code?\nint a = 5; printf(\"%d\", a++ + ++a);",
+      "options": { "a": "11", "b": "12", "c": "13", "d": "Undefined Behavior" },
+      "answer": "d",
+      "explanation": "Modifying and accessing a variable in the same statement leads to undefined behavior.",
+      "company": "TCS"
+    },
+    {
+      "question": "Write a function to find the maximum element in an array.",
+      "starterCode": "def find_max(arr):\n    # your code here",
+      "starterCodes": {
+        "python": "def find_max(arr):\n    # your code here",
+        "java": "public class Solution {\n    public static int findMax(int[] arr) {\n        // your code here\n        return 0;\n    }\n}",
+        "c": "#include <stdio.h>\nint find_max(int arr[], int n) {\n    // your code here\n    return 0;\n}",
+        "cpp": "#include <vector>\nint find_max(const std::vector<int>& arr) {\n    // your code here\n    return 0;\n}"
+      },
+      "sampleInput": "5\n1 2 3 4 5",
+      "sampleOutput": "5",
+      "constraints": "1 <= n <= 1000\n-10000 <= arr[i] <= 10000",
+      "explanation": "Iterate through the array and keep track of the maximum value.",
+      "company": "Google",
+      "difficulty": "easy",
+      "type": "coding"
+    },
+    {
+      "question": "Implement a function to check if a linked list has a cycle (Floyd's Cycle Detection).",
+      "starterCode": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef has_cycle(head):\n    # your code here",
+      "starterCodes": {
+        "python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef has_cycle(head):\n    # your code here",
+        "java": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        // your code here\n        return false;\n    }\n}",
+        "c": "struct ListNode {\n    int val;\n    struct ListNode *next;\n};\n\nint has_cycle(struct ListNode* head) {\n    // your code here\n    return 0;\n}",
+        "cpp": "struct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool hasCycle(ListNode* head) {\n    // your code here\n    return false;\n}"
+      },
+      "sampleInput": "1->2->3->4->2 (cycle)",
+      "testCases": [
+        { "input": "1->2->3->4->2 (cycle)", "expectedOutput": "True" },
+        { "input": "1->2->3->4->null", "expectedOutput": "False" },
+        { "input": "1->1 (cycle)", "expectedOutput": "True" }
+      ],
+      "sampleOutput": "True",
+      "constraints": "List length <= 10000",
+      "explanation": "Use two pointers (slow and fast) to detect a cycle.",
+      "company": "Amazon",
+      "difficulty": "intermediate",
+      "type": "coding"
+    }
+  ],
+  "ml": [
+    {
+      "question": "Which algorithm is used for classification problems?",
+      "options": { "a": "Linear Regression", "b": "Logistic Regression", "c": "K-Means", "d": "PCA" },
+      "answer": "b",
+      "explanation": "Logistic Regression is used for classification.",
+      "company": "Amazon",
+      "type": "mcq"
+    },
+    {
+      "question": "What is the main purpose of the activation function in a neural network?",
+      "options": { "a": "To initialize weights", "b": "To introduce non-linearity", "c": "To reduce overfitting", "d": "To normalize data" },
+      "answer": "b",
+      "explanation": "Activation functions introduce non-linearity to the model.",
+      "company": "Google",
+      "type": "mcq"
+    },
+    {
+      "question": "Which of the following is a supervised learning algorithm?",
+      "options": { "a": "K-Means", "b": "Apriori", "c": "Decision Tree", "d": "PCA" },
+      "answer": "c",
+      "explanation": "Decision Tree is a supervised learning algorithm.",
+      "company": "Facebook",
+      "type": "mcq"
+    },
+    {
+      "question": "What is 'overfitting' in machine learning?",
+      "options": { "a": "Model fits training data too well", "b": "Model fits test data too well", "c": "Model underperforms on all data", "d": "Model is too simple" },
+      "answer": "a",
+      "explanation": "Overfitting means the model memorizes training data and fails to generalize.",
+      "company": "Microsoft",
+      "type": "mcq"
+    },
+    {
+      "question": "Which metric is best for evaluating a classification model on imbalanced data?",
+      "options": { "a": "Accuracy", "b": "Precision-Recall", "c": "Mean Squared Error", "d": "R2 Score" },
+      "answer": "b",
+      "explanation": "Precision-Recall is better for imbalanced datasets.",
+      "company": "Uber",
+      "type": "mcq"
+    },
+    {
+      "question": "Write a function to calculate the mean of a list of numbers.",
+      "starterCode": "def calculate_mean(numbers):\n    # your code here",
+      "sampleInput": "5\n1 2 3 4 5",
+      "sampleOutput": "3.0",
+      "constraints": "1 <= n <= 1000\n-10000 <= numbers[i] <= 10000",
+      "explanation": "Sum all numbers and divide by the count.",
+      "company": "Facebook",
+      "difficulty": "easy",
+      "type": "coding"
+    },
+    {
+      "question": "Implement a function to compute the accuracy score for a binary classifier.",
+      "starterCode": "def accuracy_score(y_true, y_pred):\n    # your code here",
+      "sampleInput": "4\n1 0 1 1\n1 0 0 1",
+      "sampleOutput": "0.75",
+      "constraints": "1 <= n <= 1000\ny_true[i], y_pred[i] in {0, 1}",
+      "explanation": "Accuracy = (number of correct predictions) / (total predictions).",
+      "company": "Microsoft",
+      "difficulty": "intermediate",
+      "type": "coding"
+    }
+  ],
+  "ai": [
+    {
+      "question": "Which search algorithm is guaranteed to find the shortest path in a graph?",
+      "options": { "a": "Depth First Search", "b": "Breadth First Search", "c": "Hill Climbing", "d": "Simulated Annealing" },
+      "answer": "b",
+      "explanation": "BFS finds the shortest path in an unweighted graph.",
+      "company": "Google",
+      "type": "mcq"
+    },
+    {
+      "question": "What is the main idea behind the Turing Test?",
+      "options": { "a": "Test computer speed", "b": "Test computer intelligence", "c": "Test computer memory", "d": "Test computer graphics" },
+      "answer": "b",
+      "explanation": "Turing Test checks if a machine can exhibit intelligent behavior indistinguishable from a human.",
+      "company": "IBM",
+      "type": "mcq"
+    },
+    {
+      "question": "Which of the following is a knowledge representation technique?",
+      "options": { "a": "Neural Networks", "b": "Semantic Networks", "c": "Genetic Algorithms", "d": "Support Vector Machines" },
+      "answer": "b",
+      "explanation": "Semantic Networks are used for knowledge representation.",
+      "company": "Microsoft",
+      "type": "mcq"
+    },
+    {
+      "question": "Which algorithm is used for game playing AI (like chess)?",
+      "options": { "a": "Minimax", "b": "K-Means", "c": "Apriori", "d": "Gradient Descent" },
+      "answer": "a",
+      "explanation": "Minimax is used in decision making for games.",
+      "company": "DeepMind",
+      "type": "mcq"
+    },
+    {
+      "question": "What is the main advantage of heuristic search over blind search?",
+      "options": { "a": "Faster", "b": "More accurate", "c": "Less memory", "d": "No advantage" },
+      "answer": "a",
+      "explanation": "Heuristic search uses domain knowledge to find solutions faster.",
+      "company": "Google",
+      "type": "mcq"
+    },
+    {
+      "question": "Write a function to perform a simple depth-first search (DFS) on a graph represented as an adjacency list.",
+      "starterCode": "def dfs(graph, start):\n    # your code here",
+      "sampleInput": "4\nA B C\nB D\nC\nD\nA",
+      "sampleOutput": "A B D C",
+      "constraints": "1 <= nodes <= 100\nNode names are uppercase letters.",
+      "explanation": "Use recursion or a stack to traverse all nodes reachable from the start node.",
+      "company": "DeepMind",
+      "difficulty": "easy",
+      "type": "coding"
+    },
+    {
+      "question": "Implement the minimax algorithm for a two-player game tree.",
+      "starterCode": "def minimax(node, depth, maximizingPlayer):\n    # your code here",
+      "sampleInput": "Tree: [3, 5, 2, 9, 12, 5, 23, 23]",
+      "sampleOutput": "The optimal value is: 12",
+      "constraints": "Tree is a complete binary tree of depth <= 5.",
+      "explanation": "Recursively evaluate the game tree to find the optimal move for the maximizing player.",
+      "company": "OpenAI",
+      "difficulty": "intermediate",
+      "type": "coding"
+    }
+  ],
+  "quant": [
+    {
+      "question": "If the price of a product increases from $200 to $250, what is the percentage increase?",
+      "options": { "a": "20%", "b": "25%", "c": "22.5%", "d": "12.5%" },
+      "answer": "d",
+      "explanation": "Increase = 50; % Increase = (50/200)*100 = 25%.",
+      "company": "TCS"
+    },
+    {
+      "question": "A train 100m long passes a pole in 10 seconds. What is its speed?",
+      "options": { "a": "10 m/s", "b": "20 m/s", "c": "5 m/s", "d": "15 m/s" },
+      "answer": "a",
+      "explanation": "Speed = Distance/Time = 100/10 = 10 m/s.",
+      "company": "Infosys"
+    },
+    {
+      "question": "What is the value of x if 2x + 3 = 11?",
+      "options": { "a": "3", "b": "4", "c": "5", "d": "6" },
+      "answer": "b",
+      "explanation": "2x = 8, x = 4.",
+      "company": "Wipro"
+    },
+    {
+      "question": "If the average of 5 numbers is 20, what is their sum?",
+      "options": { "a": "100", "b": "120", "c": "80", "d": "60" },
+      "answer": "a",
+      "explanation": "Sum = Average × Number of items = 20 × 5 = 100.",
+      "company": "Capgemini"
+    },
+    {
+      "question": "A can do a work in 10 days, B in 15 days. How long will they take together?",
+      "options": { "a": "6 days", "b": "8 days", "c": "9 days", "d": "12 days" },
+      "answer": "a",
+      "explanation": "1/10 + 1/15 = 1/6; so 6 days.",
+      "company": "Cognizant"
+    }
+  ],
+  "lr": [
+    {
+      "question": "Find the next number in the series: 2, 6, 12, 20, ?",
+      "options": { "a": "30", "b": "28", "c": "24", "d": "22" },
+      "answer": "b",
+      "explanation": "Pattern: n^2 + n; next is 5^2 + 5 = 25 + 5 = 30.",
+      "company": "TCS"
+    },
+    {
+      "question": "If all roses are flowers and some flowers fade quickly, can we say some roses fade quickly?",
+      "options": { "a": "Yes", "b": "No", "c": "Cannot be determined", "d": "None" },
+      "answer": "c",
+      "explanation": "We cannot be sure if the 'some' flowers that fade are roses.",
+      "company": "Infosys"
+    },
+    {
+      "question": "In a certain code, 'GREAT' is written as 'HTFBU'. How is 'SMALL' written?",
+      "options": { "a": "TNBMM", "b": "TNBMM", "c": "TMBMM", "d": "TNBLL" },
+      "answer": "a",
+      "explanation": "Each letter is shifted by +1.",
+      "company": "Wipro"
+    },
+    {
+      "question": "Which one does not belong to the group: Apple, Orange, Banana, Carrot?",
+      "options": { "a": "Apple", "b": "Orange", "c": "Banana", "d": "Carrot" },
+      "answer": "d",
+      "explanation": "Carrot is a vegetable, others are fruits.",
+      "company": "Capgemini"
+    },
+    {
+      "question": "If 'A' is coded as 1, 'B' as 2, ..., what is the code for 'CAT'?",
+      "options": { "a": "24", "b": "27", "c": "20", "d": "23" },
+      "answer": "b",
+      "explanation": "C=3, A=1, T=20; 3+1+20=24.",
+      "company": "Cognizant"
+    }
+  ],
+  "verbal": [
+    {
+      "question": "Choose the correct synonym for 'Abate'.",
+      "options": { "a": "Increase", "b": "Lessen", "c": "Multiply", "d": "Rise" },
+      "answer": "b",
+      "explanation": "'Abate' means to lessen.",
+      "company": "TCS"
+    },
+    {
+      "question": "Identify the correctly spelled word.",
+      "options": { "a": "Recieve", "b": "Receive", "c": "Recive", "d": "Receeve" },
+      "answer": "b",
+      "explanation": "'Receive' is the correct spelling.",
+      "company": "Infosys"
+    },
+    {
+      "question": "Choose the correct passive form: 'She writes a letter.'",
+      "options": { "a": "A letter is written by her.", "b": "A letter was written by her.", "c": "A letter has been written by her.", "d": "A letter will be written by her." },
+      "answer": "a",
+      "explanation": "Present simple passive: is/are + past participle.",
+      "company": "Wipro"
+    },
+    {
+      "question": "Fill in the blank: He is good ___ mathematics.",
+      "options": { "a": "in", "b": "at", "c": "on", "d": "with" },
+      "answer": "b",
+      "explanation": "'Good at' is the correct preposition.",
+      "company": "Capgemini"
+    },
+    {
+      "question": "Choose the correct antonym for 'Benevolent'.",
+      "options": { "a": "Kind", "b": "Cruel", "c": "Generous", "d": "Helpful" },
+      "answer": "b",
+      "explanation": "'Cruel' is the opposite of 'Benevolent'.",
+      "company": "Cognizant"
+    }
+  ],
+  "comm": [
+    {
+      "question": "Which of the following is most important for effective communication?",
+      "options": { "a": "Speaking skills", "b": "Listening skills", "c": "Writing skills", "d": "Reading skills" },
+      "answer": "b",
+      "explanation": "Listening is key to effective communication.",
+      "company": "TCS"
+    },
+    {
+      "question": "What is the best way to handle a disagreement in a team?",
+      "options": { "a": "Ignore it", "b": "Argue", "c": "Discuss openly", "d": "Complain to manager" },
+      "answer": "c",
+      "explanation": "Open discussion resolves conflicts.",
+      "company": "Infosys"
+    },
+    {
+      "question": "Which is an example of non-verbal communication?",
+      "options": { "a": "Email", "b": "Phone call", "c": "Facial expression", "d": "Letter" },
+      "answer": "c",
+      "explanation": "Facial expressions are non-verbal cues.",
+      "company": "Wipro"
+    },
+    {
+      "question": "What should you do if you don't understand a question in an interview?",
+      "options": { "a": "Guess the answer", "b": "Ask for clarification", "c": "Stay silent", "d": "Change the topic" },
+      "answer": "b",
+      "explanation": "Clarifying ensures you answer correctly.",
+      "company": "Capgemini"
+    },
+    {
+      "question": "Which of the following is a barrier to effective communication?",
+      "options": { "a": "Active listening", "b": "Noise", "c": "Feedback", "d": "Clarity" },
+      "answer": "b",
+      "explanation": "Noise disrupts communication.",
+      "company": "Cognizant"
+    }
+  ]
+}

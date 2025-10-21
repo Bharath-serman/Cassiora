@@ -1,0 +1,280 @@
+[
+  {
+    "id": 1,
+    "title": "Shoe Store Shopping",
+    "conversation": [
+      { "speaker": "A", "text": "Hi, welcome to our store! How can I help you today?" },
+      { "speaker": "B", "text": "Hello, I'm looking for a pair of running shoes." },
+      { "speaker": "A", "text": "Of course! What size do you wear?" },
+      { "speaker": "B", "text": "I wear a size 9." },
+      { "speaker": "A", "text": "Great, let me show you our latest models." }
+    ],
+    "questions": [
+      {
+        "question": "Why did person B come to the store?",
+        "options": ["To buy groceries", "To look for running shoes", "To return an item", "To meet a friend"],
+        "answer": 1
+      },
+      {
+        "question": "What size shoes does person B wear?",
+        "options": ["8", "9", "10", "11"],
+        "answer": 1
+      },
+      {
+        "question": "Who offered to show the latest models?",
+        "options": ["A", "B"],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Ordering Coffee",
+    "conversation": [
+      { "speaker": "A", "text": "Good morning! What can I get for you today?" },
+      { "speaker": "B", "text": "Hi, I'd like a cappuccino, please." },
+      { "speaker": "A", "text": "Would you like that hot or iced?" },
+      { "speaker": "B", "text": "Hot, please." },
+      { "speaker": "A", "text": "Anything else?" },
+      { "speaker": "B", "text": "No, that's all. Thank you!" },
+      { "speaker": "A", "text": "You're welcome. That will be $3.50." }
+    ],
+    "questions": [
+      {
+        "question": "What did person B order?",
+        "options": ["Latte", "Cappuccino", "Espresso", "Tea"],
+        "answer": 1
+      },
+      {
+        "question": "How much does the coffee cost?",
+        "options": ["$2.00", "$3.50", "$4.00", "$5.00"],
+        "answer": 1
+      },
+      {
+        "question": "Did person B want anything else?",
+        "options": ["Yes", "No"],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Booking a Hotel Room",
+    "conversation": [
+      { "speaker": "A", "text": "Welcome to City Hotel. How may I help you?" },
+      { "speaker": "B", "text": "I'd like to book a room for two nights, please." },
+      { "speaker": "A", "text": "Single or double room?" },
+      { "speaker": "B", "text": "Double, please." },
+      { "speaker": "A", "text": "Your room is booked. Enjoy your stay!" }
+    ],
+    "questions": [
+      {
+        "question": "How many nights does person B want to stay?",
+        "options": ["One", "Two", "Three", "Four"],
+        "answer": 1
+      },
+      {
+        "question": "What type of room did person B request?",
+        "options": ["Single", "Double", "Suite", "Twin"],
+        "answer": 1
+      },
+      {
+        "question": "Where is this conversation happening?",
+        "options": ["A restaurant", "A hotel", "A store", "A bank"],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "At the Doctor's Office",
+    "conversation": [
+      { "speaker": "A", "text": "Good afternoon. What brings you in today?" },
+      { "speaker": "B", "text": "I've been coughing and feeling tired." },
+      { "speaker": "A", "text": "How long have you had these symptoms?" },
+      { "speaker": "B", "text": "About a week." },
+      { "speaker": "A", "text": "I'll run some tests and get back to you." }
+    ],
+    "questions": [
+      {
+        "question": "What symptoms does person B have?",
+        "options": ["Fever and headache", "Cough and tiredness", "Stomach ache", "Back pain"],
+        "answer": 1
+      },
+      {
+        "question": "How long has person B been sick?",
+        "options": ["A day", "Three days", "A week", "A month"],
+        "answer": 2
+      },
+      {
+        "question": "Who will run some tests?",
+        "options": ["A", "B"],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Making a Reservation",
+    "conversation": [
+      { "speaker": "A", "text": "Hello, I'd like to reserve a table for tonight." },
+      { "speaker": "B", "text": "For how many people?" },
+      { "speaker": "A", "text": "Four people at 7 PM, please." },
+      { "speaker": "B", "text": "Your table is reserved. See you tonight!" }
+    ],
+    "questions": [
+      {
+        "question": "How many people is the reservation for?",
+        "options": ["Two", "Four", "Six", "Eight"],
+        "answer": 1
+      },
+      {
+        "question": "What time is the reservation?",
+        "options": ["6 PM", "7 PM", "8 PM", "9 PM"],
+        "answer": 1
+      },
+      {
+        "question": "Where is this conversation happening?",
+        "options": ["A hotel", "A restaurant", "A store", "A bank"],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Job Interview",
+    "conversation": [
+      { "speaker": "A", "text": "Thank you for coming in today." },
+      { "speaker": "B", "text": "Thank you for having me." },
+      { "speaker": "A", "text": "Can you tell me about your previous experience?" },
+      { "speaker": "B", "text": "I worked as a software developer for three years." },
+      { "speaker": "A", "text": "That's great. We'll be in touch soon." }
+    ],
+    "questions": [
+      {
+        "question": "What job did person B have previously?",
+        "options": ["Designer", "Teacher", "Software developer", "Doctor"],
+        "answer": 2
+      },
+      {
+        "question": "Who is conducting the interview?",
+        "options": ["A", "B"],
+        "answer": 0
+      },
+      {
+        "question": "How many years of experience does person B have?",
+        "options": ["One", "Two", "Three", "Four"],
+        "answer": 2
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Asking for Directions",
+    "conversation": [
+      { "speaker": "A", "text": "Excuse me, can you tell me how to get to the library?" },
+      { "speaker": "B", "text": "Go straight and turn left at the second light." },
+      { "speaker": "A", "text": "Thank you very much!" },
+      { "speaker": "B", "text": "You're welcome!" }
+    ],
+    "questions": [
+      {
+        "question": "Where does person A want to go?",
+        "options": ["Library", "Museum", "Park", "Bank"],
+        "answer": 0
+      },
+      {
+        "question": "What should person A do at the second light?",
+        "options": ["Turn right", "Turn left", "Go straight", "Stop"],
+        "answer": 1
+      },
+      {
+        "question": "Who gave the directions?",
+        "options": ["A", "B"],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Phone Call Appointment",
+    "conversation": [
+      { "speaker": "A", "text": "Hello, this is Dr. Smith's office." },
+      { "speaker": "B", "text": "Hi, I'd like to make an appointment." },
+      { "speaker": "A", "text": "What day works best for you?" },
+      { "speaker": "B", "text": "Friday would be great." },
+      { "speaker": "A", "text": "You're booked for Friday at 10 AM." }
+    ],
+    "questions": [
+      {
+        "question": "Who is person A?",
+        "options": ["A doctor", "A receptionist", "A patient", "A teacher"],
+        "answer": 1
+      },
+      {
+        "question": "When is the appointment?",
+        "options": ["Monday", "Wednesday", "Friday", "Saturday"],
+        "answer": 2
+      },
+      {
+        "question": "What time is the appointment?",
+        "options": ["8 AM", "9 AM", "10 AM", "11 AM"],
+        "answer": 2
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Ordering Food Delivery",
+    "conversation": [
+      { "speaker": "A", "text": "I'd like to order a pizza for delivery." },
+      { "speaker": "B", "text": "What size would you like?" },
+      { "speaker": "A", "text": "Large, please." },
+      { "speaker": "B", "text": "Your pizza will arrive in 30 minutes." }
+    ],
+    "questions": [
+      {
+        "question": "What food did person A order?",
+        "options": ["Burger", "Pizza", "Pasta", "Salad"],
+        "answer": 1
+      },
+      {
+        "question": "How long will the delivery take?",
+        "options": ["15 minutes", "30 minutes", "45 minutes", "60 minutes"],
+        "answer": 1
+      },
+      {
+        "question": "Who is the customer?",
+        "options": ["A", "B"],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Library Card Registration",
+    "conversation": [
+      { "speaker": "A", "text": "I'd like to register for a library card." },
+      { "speaker": "B", "text": "May I see your ID, please?" },
+      { "speaker": "A", "text": "Here you go." },
+      { "speaker": "B", "text": "Thank you. Your card will be ready in a moment." }
+    ],
+    "questions": [
+      {
+        "question": "What does person A want to do?",
+        "options": ["Return a book", "Register for a card", "Pay a fine", "Ask for directions"],
+        "answer": 1
+      },
+      {
+        "question": "What does person B ask for?",
+        "options": ["A book", "An ID", "A phone number", "A library card"],
+        "answer": 1
+      },
+      {
+        "question": "Who will prepare the library card?",
+        "options": ["A", "B"],
+        "answer": 1
+      }
+    ]
+  }
+]
