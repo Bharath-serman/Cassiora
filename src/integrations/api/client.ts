@@ -1,8 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL ? 
-  `${import.meta.env.VITE_API_URL}/api` : 
-  'http://localhost:3001/api';
-
-// Helper function to handle API responses
+const API_URL = 'http://localhost:3001/api';
+;
 
 // Helper function to handle API responses
 async function handleResponse<T>(response: Response): Promise<T> {
