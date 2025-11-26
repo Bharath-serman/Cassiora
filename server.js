@@ -66,8 +66,8 @@ let connectionPromise = null;
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'bharathserman@gmail.com',
-    pass: process.env.EMAIL_PASS || 'rwvl njqi umiu kyuy'
+    user: process.env.EMAIL_USER || '',  //Mail_ID
+    pass: process.env.EMAIL_PASS || ''  //Passkey (Email)
   }
 });
 
