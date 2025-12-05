@@ -38,7 +38,8 @@ for (const topic in questionBank) {
 }
 
 // 3. Connect to MongoDB and insert
-const uri = 'mongodb://localhost:27017'; // Change if your MongoDB is elsewhere
+import 'dotenv/config';
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017'; // Change if your MongoDB is elsewhere
 const client = new MongoClient(uri);
 
 async function run() {
