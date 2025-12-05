@@ -39,23 +39,27 @@ async function connectToMongo() {
         return cachedDb;
     }
 
-    if (!cachedClient) {
-        cachedClient = new MongoClient(MONGODB_URI, {
-            maxPoolSize: 10, // Reduced for serverless
-            minPoolSize: 1, // Reduced for serverless
-            maxIdleTimeMS: 60000,
-            connectTimeoutMS: 30000,
-            socketTimeoutMS: 45000,
-            serverSelectionTimeoutMS: 30000,
-            heartbeatFrequencyMS: 10000,
-            retryWrites: true,
-            retryReads: true,
-        });
-        await cachedClient.connect();
-    }
+    const client = new MongoClient(MONGODB_URI, {
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        maxIdleTimeMS: 60000,
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 30000,
+        heartbeatFrequencyMS: 10000,
+        retryWrites: true,
+        retryReads: true,
+    });
 
-    cachedDb = cachedClient.db('placement');
-    return cachedDb;
+    try {
+        await client.connect();
+        cachedClient = client;
+        cachedDb = client.db('placement');
+        return cachedDb;
+    } catch (error) {
+        console.error("MongoDB connection error:", error);
+        throw error;
+    }
 }
 
 // Create a transporter using Gmail
