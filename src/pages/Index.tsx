@@ -37,7 +37,7 @@ export default function Index() {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Not authenticated');
 
-        const res = await fetch('http://localhost:3001/api/profile', {
+        const res = await fetch('/api/profile', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -52,7 +52,7 @@ export default function Index() {
         toast({ title: "Error", description: "Failed to load streak data." });
       }
     };
-    
+
     if (profile) {
       fetchUserStreak();
     }
@@ -68,7 +68,7 @@ export default function Index() {
       <div className="w-full flex flex-col items-center gap-6 mb-4 md:mb-7">
         <div className="flex flex-col gap-1 items-center text-center">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary tracking-tight mb-1">
-            CASSIORA 
+            CASSIORA
           </h1>
           <span className="text-lg md:text-xl font-medium text-muted-foreground">
             Master interviews with daily practice tests
@@ -244,21 +244,21 @@ export default function Index() {
               <a href="#" aria-label="Instagram" className="hover:text-primary transition">
                 {/* Instagram SVG */}
                 <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" strokeWidth="2"/>
-                  <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/>
-                  <circle cx="17" cy="7" r="1.5" fill="currentColor"/>
+                  <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" strokeWidth="2" />
+                  <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
+                  <circle cx="17" cy="7" r="1.5" fill="currentColor" />
                 </svg>
               </a>
               <a href="#" aria-label="GitHub" className="hover:text-primary transition">
                 {/* GitHub SVG */}
                 <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.26c0 4.48 2.87 8.28 6.84 9.63.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05 .89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85.004 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.89 0 1.36-.01 2.45-.01 2.78 0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/>
+                  <path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.26c0 4.48 2.87 8.28 6.84 9.63.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05 .89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85.004 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.89 0 1.36-.01 2.45-.01 2.78 0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z" />
                 </svg>
               </a>
               <a href="#" aria-label="Twitter" className="hover:text-primary transition">
                 {/* X (Twitter) SVG */}
                 <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path fill="currentColor" d="M17.53 2H21L13.47 10.39L22 22H15.68L10.44 15.18L4.56 22H1L9.04 13.04L0 2H6.5L11.28 8.22L17.53 2ZM16.32 20H18.2L6.8 4H4.78L16.32 20Z"/>
+                  <path fill="currentColor" d="M17.53 2H21L13.47 10.39L22 22H15.68L10.44 15.18L4.56 22H1L9.04 13.04L0 2H6.5L11.28 8.22L17.53 2ZM16.32 20H18.2L6.8 4H4.78L16.32 20Z" />
                 </svg>
               </a>
             </div>

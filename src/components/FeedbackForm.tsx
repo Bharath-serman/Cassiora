@@ -13,7 +13,7 @@ export default function FeedbackForm() {
     e.preventDefault();
     setSending(true);
     try {
-      const res = await fetch("http://localhost:3001/api/feedback", {
+      const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, message }),

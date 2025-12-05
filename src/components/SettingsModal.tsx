@@ -40,19 +40,19 @@ export default function SettingsModal({ open, onOpenChange }: SettingsModalProps
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
-    
+
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No authentication token found');
-      
+
       await updateProfile(token, username);
       toast({ title: "Profile updated", description: "Your profile was updated successfully." });
       refresh();
     } catch (err: any) {
-      toast({ 
-        title: "Failed to update", 
-        description: err.message || "An error occurred while updating your profile" 
+      toast({
+        title: "Failed to update",
+        description: err.message || "An error occurred while updating your profile"
       });
     }
     setLoading(false);
@@ -67,7 +67,7 @@ export default function SettingsModal({ open, onOpenChange }: SettingsModalProps
       if (!token) throw new Error('No authentication token found');
       const formData = new FormData();
       formData.append('photo', file);
-      const res = await fetch('http://localhost:3001/api/profile/photo', {
+      const res = await fetch('/api/profile/photo', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

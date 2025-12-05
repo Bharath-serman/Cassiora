@@ -20,7 +20,7 @@ interface ActivityLog {
 // Fetch activity data from MongoDB
 async function fetchActivity(token: string): Promise<ActivityLog[]> {
   try {
-    const res = await fetch(`http://localhost:3001/api/activity`, {
+    const res = await fetch(`/api/activity`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

@@ -49,22 +49,22 @@ export default function TestPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const topicFromUrl = urlParams.get('topic');
     const state = location.state as { topic?: string, topicName?: string };
-    
+
     // If no topic in URL or state, redirect to home
     if (!topicFromUrl && !state?.topic) {
-      toast({ 
-        title: "No topic selected", 
+      toast({
+        title: "No topic selected",
         description: "Please select a topic from the topics page.",
         variant: "destructive"
       });
       navigate("/");
       return;
     }
-    
+
     // Use topic from URL (if present) or from state
     const selectedTopic = topicFromUrl || state?.topic || '';
     setTopic(selectedTopic);
-    
+
     // If we have a topic name from state, use it for display
     if (state?.topicName) {
       document.title = `${state.topicName} Test | Spideo`;
@@ -101,7 +101,7 @@ export default function TestPage() {
 
         // Always show confirmation/start page for all topics
         setQuestions(data.questions);
-setFilteredQuestions(data.questions);
+        setFilteredQuestions(data.questions);
         setQuestionTypeChoice("");
         setState("ready");
         setCurrentQuestion(0);
@@ -167,7 +167,7 @@ setFilteredQuestions(data.questions);
     if (profile) {
       try {
         // Submit test results and update streak in a single API call
-        const res = await fetch(`http://localhost:3001/api/profile/streak`, {
+        const res = await fetch(`/api/profile/streak`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({
@@ -180,7 +180,7 @@ setFilteredQuestions(data.questions);
 
         refresh(); // Refresh user profile to get updated streak in context
         toast({ title: "Progress Updated!", description: "Your streak and activity have been recorded." });
-        
+
         // Only show streak animation for first test of the day
         if (data.isFirstTestOfDay) {
           console.log('[Test] handleSubmit: First test of day, triggering animation with streak:', data.streak);
@@ -241,41 +241,41 @@ setFilteredQuestions(data.questions);
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Button
-  variant={questionTypeChoice === "mcq" ? "default" : "outline"}
-  onClick={() => setQuestionTypeChoice("mcq")}
-  size="lg"
->
-  MCQ Only
-</Button>
-<Button
-  variant={questionTypeChoice === "coding" ? "default" : "outline"}
-  onClick={() => setQuestionTypeChoice("coding")}
-  size="lg"
->
-  Coding Only
-</Button>
+                variant={questionTypeChoice === "mcq" ? "default" : "outline"}
+                onClick={() => setQuestionTypeChoice("mcq")}
+                size="lg"
+              >
+                MCQ Only
+              </Button>
+              <Button
+                variant={questionTypeChoice === "coding" ? "default" : "outline"}
+                onClick={() => setQuestionTypeChoice("coding")}
+                size="lg"
+              >
+                Coding Only
+              </Button>
             </div>
             {questionTypeChoice && (
-  questions.filter(q => q.type === questionTypeChoice).length > 0 ? (
-    <div className="flex justify-center mt-4">
-      <Button size="lg" onClick={() => {
-        setFilteredQuestions(
-          questions.filter(q => q.type === questionTypeChoice)
-        );
-        setState("in-progress");
-        setCurrentQuestion(0);
-        setAnswers({});
-        setScore(0);
-      }}>
-        Start {questionTypeChoice === "mcq" ? "MCQ" : "Coding"} Test
-      </Button>
-    </div>
-  ) : (
-    <div className="text-center text-red-600 font-semibold mt-4">
-      No {questionTypeChoice === "mcq" ? "MCQ" : "Coding"} questions available for this topic.
-    </div>
-  )
-)}
+              questions.filter(q => q.type === questionTypeChoice).length > 0 ? (
+                <div className="flex justify-center mt-4">
+                  <Button size="lg" onClick={() => {
+                    setFilteredQuestions(
+                      questions.filter(q => q.type === questionTypeChoice)
+                    );
+                    setState("in-progress");
+                    setCurrentQuestion(0);
+                    setAnswers({});
+                    setScore(0);
+                  }}>
+                    Start {questionTypeChoice === "mcq" ? "MCQ" : "Coding"} Test
+                  </Button>
+                </div>
+              ) : (
+                <div className="text-center text-red-600 font-semibold mt-4">
+                  No {questionTypeChoice === "mcq" ? "MCQ" : "Coding"} questions available for this topic.
+                </div>
+              )
+            )}
           </CardContent>
         </Card>
       </div>
@@ -295,9 +295,9 @@ setFilteredQuestions(data.questions);
                 Score: {score}/{finishedTestQuestions.length}
               </p>
               <p className="text-muted-foreground">
-                {score === finishedTestQuestions.length ? "Perfect score! 🎉" : 
-                 score >= finishedTestQuestions.length * 0.7 ? "Great job! 🌟" :
-                 "Keep practicing! 💪"}
+                {score === finishedTestQuestions.length ? "Perfect score! 🎉" :
+                  score >= finishedTestQuestions.length * 0.7 ? "Great job! 🌟" :
+                    "Keep practicing! 💪"}
               </p>
             </div>
             <div className="space-y-4">
@@ -571,11 +571,10 @@ setFilteredQuestions(data.questions);
                     {answers[currentQuestion].results.map((r, i) => (
                       <li
                         key={i}
-                        className={`p-3 rounded border w-full max-w-full ${
-                          r.passed
+                        className={`p-3 rounded border w-full max-w-full ${r.passed
                             ? 'border-green-500 bg-green-100 dark:bg-green-900/50'
                             : 'border-red-500 bg-red-100 dark:bg-red-900/50'
-                        }`}
+                          }`}
                       >
                         <div className="font-semibold">
                           Test Case {i + 1}:{' '}

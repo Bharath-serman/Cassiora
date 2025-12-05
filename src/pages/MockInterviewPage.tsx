@@ -75,18 +75,18 @@ const MockInterviewPage = () => {
       recognitionRef.current.stop();
     }
   };
-const API_BASE = "http://localhost:3001";
+  const API_BASE = "";
   const fetchQuestionsAndStart = async () => {
     setInterviewState('fetching');
     try {
       const response = await fetch(`${API_BASE}/api/interview/questions`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  },
-  body: JSON.stringify({ role: selectedRole }),
-});
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ role: selectedRole }),
+      });
 
       if (!response.ok) throw new Error('Failed to fetch questions.');
 
@@ -129,13 +129,13 @@ const API_BASE = "http://localhost:3001";
     setIsAnalyzing(true);
     try {
       const response = await fetch(`${API_BASE}/api/interview/analyze`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  },
-  body: JSON.stringify({ transcript, role: selectedRole }),
-});
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ transcript, role: selectedRole }),
+      });
 
       if (!response.ok) throw new Error('Analysis failed');
       const result = await response.json();
@@ -203,7 +203,7 @@ const API_BASE = "http://localhost:3001";
     // Ask the first question when ready
     if (interviewState === 'starting' && questions.length > 0 && transcript.length === 0) {
       askQuestion();
-    } 
+    }
     // Ask subsequent questions when an answer has been processed
     else if (interviewState === 'processing_answer' && currentQuestionIndex > 0 && currentQuestionIndex === transcript.length) {
       askQuestion();
@@ -214,23 +214,23 @@ const API_BASE = "http://localhost:3001";
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white font-sans">
       {analysisResult && (
-        <InterviewAnalysis 
-          feedback={analysisResult} 
-          onClose={() => setAnalysisResult(null)} 
+        <InterviewAnalysis
+          feedback={analysisResult}
+          onClose={() => setAnalysisResult(null)}
         />
       )}
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
         <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Cassiora Mock Interview</h1>
         <Button onClick={() => navigate('/')} variant="ghost">
-          <ArrowLeft className="mr-2 h-4 w-4" /> 
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 gap-6">
-        
+
         {/* Video Panels */}
         <div className="w-full max-w-6xl flex-1 flex items-stretch justify-center gap-6">
           {interviewState === 'idle' || interviewState === 'fetching' ? (
@@ -293,16 +293,16 @@ const API_BASE = "http://localhost:3001";
             </div>
           )}
           {interviewState === 'fetching' && (
-              <div className="flex flex-col items-center text-center animate-fade-in">
-                  <Loader2 className="h-12 w-12 animate-spin text-red-500" />
-                  <p className="text-xl mt-4">Generating questions for {selectedRole}...</p>
-              </div>
+            <div className="flex flex-col items-center text-center animate-fade-in">
+              <Loader2 className="h-12 w-12 animate-spin text-red-500" />
+              <p className="text-xl mt-4">Generating questions for {selectedRole}...</p>
+            </div>
           )}
           {(interviewState === 'asking' || interviewState === 'listening' || interviewState === 'processing_answer') && (
             <div className="flex items-center gap-6 animate-fade-in">
               <Button variant="outline" className="p-4 rounded-full bg-gray-200 dark:bg-gray-800 border-gray-300 dark:border-gray-700" disabled><Video className="h-6 w-6" /></Button>
               <Button onClick={handleEndInterview} variant="destructive" className="p-6 rounded-full">
-                  <PhoneOff className="h-8 w-8" />
+                <PhoneOff className="h-8 w-8" />
               </Button>
               <Button variant="outline" className="p-4 rounded-full bg-gray-200 dark:bg-gray-800 border-gray-300 dark:border-gray-700" disabled><Mic className="h-6 w-6" /></Button>
             </div>
