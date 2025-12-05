@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node server.js"
+    "server": "node api/index.js"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",

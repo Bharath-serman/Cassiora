@@ -1,7 +1,5 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt from 'bcryptjs';
@@ -12,25 +10,12 @@ import 'dotenv/config';
 
 const app = express();
 
-// Set up multer for file uploads
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-  }
+// Use memory storage for Vercel (no persistent filesystem)
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 }, // Limit to 1MB
 });
-const upload = multer({ storage });
-
-// Serve uploaded images statically
-app.use('/uploads', express.static(uploadDir));
 
 // Increase payload size limit
 app.use(express.json({ limit: '10mb' }));
@@ -42,86 +27,53 @@ app.use(cors());
 const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
   console.error('FATAL: MONGODB_URI is not defined in environment variables');
-  process.exit(1);
 }
 
 // Create a connection pool with improved settings
-const client = new MongoClient(MONGODB_URI, {
-  maxPoolSize: 50,
-  minPoolSize: 10,
-  maxIdleTimeMS: 60000,
-  connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000,
-  serverSelectionTimeoutMS: 30000,
-  heartbeatFrequencyMS: 10000,
-  retryWrites: true,
-  retryReads: true,
-});
+// In serverless, we need to cache the client
+let cachedClient = null;
+let cachedDb = null;
 
-let db;
-let isConnecting = false;
-let connectionPromise = null;
+async function connectToMongo() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  if (!cachedClient) {
+    cachedClient = new MongoClient(MONGODB_URI, {
+      maxPoolSize: 10, // Reduced for serverless
+      minPoolSize: 1, // Reduced for serverless
+      maxIdleTimeMS: 60000,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 30000,
+      heartbeatFrequencyMS: 10000,
+      retryWrites: true,
+      retryReads: true,
+    });
+    await cachedClient.connect();
+  }
+  
+  cachedDb = cachedClient.db('placement');
+  return cachedDb;
+}
 
 // Create a transporter using Gmail
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'bharathserman@gmail.com',
-    pass: process.env.EMAIL_PASS || 'rwvl njqi umiu kyuy'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
-
-// Improved connection handling with retries
-async function connectToMongo(retries = 3) {
-  if (isConnecting) {
-    return connectionPromise;
-  }
-
-  if (db) {
-    return db;
-  }
-
-  isConnecting = true;
-  connectionPromise = (async () => {
-    for (let i = 0; i < retries; i++) {
-      try {
-        await client.connect();
-        db = client.db('placement');
-        console.log('Connected to MongoDB');
-        isConnecting = false;
-        return db;
-      } catch (err) {
-        console.error(`Connection attempt ${i + 1} failed:`, err);
-        if (i === retries - 1) {
-          isConnecting = false;
-          throw err;
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
-      }
-    }
-  })();
-
-  return connectionPromise;
-}
-
-// Load environment variables
-import dotenv from 'dotenv';
-dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   console.error('FATAL: JWT_SECRET is not defined in environment variables');
-  process.exit(1);
-}
-
-if (!process.env.OPENROUTER_API_KEY) {
-  console.error('FATAL: OPENROUTER_API_KEY is not defined in environment variables');
-  process.exit(1);
 }
 
 const openai = new OpenAI({
   baseURL: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
   apiKey: process.env.OPENROUTER_API_KEY,
   defaultHeaders: {
     "HTTP-Referer": "http://localhost:3001",
@@ -139,6 +91,7 @@ const authenticateToken = async (req, res, next) => {
   }
 
   try {
+    const db = await connectToMongo();
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await db.collection('users').findOne({ _id: new ObjectId(decoded.userId) });
 
@@ -153,6 +106,11 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
+// Root endpoint for health check
+app.get('/api', (req, res) => {
+  res.json({ status: 'ok', message: 'Spideo API is running' });
+});
+
 // Auth endpoints
 app.post('/api/auth/signup', async (req, res) => {
   const { email, password, username } = req.body;
@@ -162,6 +120,7 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 
   try {
+    const db = await connectToMongo();
     // Check if user already exists
     const existingUser = await db.collection('users').findOne({ email });
     if (existingUser) {
@@ -217,6 +176,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 
   try {
+    const db = await connectToMongo();
     // Find user
     const user = await db.collection('users').findOne({ email });
     if (!user) {
@@ -252,6 +212,7 @@ app.post('/api/auth/login', async (req, res) => {
 // Profile endpoints
 app.get('/api/profile', authenticateToken, async (req, res) => {
   try {
+    const db = await connectToMongo();
     const profile = await db.collection('profiles').findOne({ user_id: req.user._id });
 
     if (!profile) {
@@ -304,7 +265,16 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 app.post('/api/profile/photo', upload.single('photo'), authenticateToken, async (req, res) => {
   try {
-    const photoUrl = `/uploads/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    // Convert buffer to base64
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const mimeType = req.file.mimetype;
+    const photoUrl = `data:${mimeType};base64,${b64}`;
+
+    const db = await connectToMongo();
     await db.collection('users').updateOne(
       { _id: new ObjectId(req.user._id) },
       { $set: { photoUrl } }
@@ -324,6 +294,7 @@ app.patch('/api/profile', authenticateToken, async (req, res) => {
   }
 
   try {
+    const db = await connectToMongo();
     // Update profile
     const result = await db.collection('profiles').updateOne(
       { user_id: req.user._id },
@@ -349,6 +320,7 @@ app.patch('/api/profile', authenticateToken, async (req, res) => {
 app.post('/api/profile/streak', authenticateToken, async (req, res) => {
   try {
     const { topic, score, totalQuestions } = req.body;
+    const db = await connectToMongo();
     const profile = await db.collection('profiles').findOne({ user_id: req.user._id });
 
     if (!profile) {
@@ -414,6 +386,7 @@ app.post('/api/profile/streak', authenticateToken, async (req, res) => {
 // Activity log endpoint
 app.get('/api/activity', authenticateToken, async (req, res) => {
   try {
+    const db = await connectToMongo();
     const logs = await db.collection('activities')
       .find({ user_id: req.user._id })
       .sort({ date: -1 })
@@ -428,20 +401,80 @@ app.get('/api/activity', authenticateToken, async (req, res) => {
 // Questions endpoint
 app.get('/api/questions', authenticateToken, async (req, res) => {
   const { topic } = req.query;
+  // If topic is present, it's a specific topic request, otherwise it might be a general list request or error
+  // But wait, there are two /api/questions endpoints in the original file.
+  // One takes topic as query param and returns questions for that topic.
+  // The other (further down) does something similar but with more complex logic.
+  // I will merge them or use the more complex one.
+  // The first one:
+  /*
+  app.get('/api/questions', authenticateToken, async (req, res) => {
+    const { topic } = req.query;
+    if (!topic) {
+      return res.status(400).json({ error: 'Topic is required' });
+    }
+    try {
+      const questions = await db.collection('questions').find({ topic }).toArray();
+      res.json({ questions });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to fetch questions' });
+    }
+  });
+  */
+  // The second one (lines 665+) seems more robust with case-insensitive matching.
+  // I will use the second implementation logic here.
+
   if (!topic) {
-    return res.status(400).json({ error: 'Topic is required' });
+     return res.status(400).json({ error: 'Topic is required' });
   }
+
+  console.log('Original requested topic:', topic);
+  
   try {
-    const questions = await db.collection('questions').find({ topic }).toArray();
-    res.json({ questions });
+    const db = await connectToMongo();
+    // Get all available topics for case-insensitive comparison
+    const allTopics = await db.collection('questions').distinct('topic');
+    console.log('All available topics in DB:', allTopics);
+    
+    // Find the correct case of the topic (case-insensitive match)
+    const matchedTopic = allTopics.find(t => t.toLowerCase() === topic.toLowerCase());
+    
+    if (!matchedTopic) {
+      return res.status(404).json({ 
+        error: `Topic not found: ${topic}`,
+        availableTopics: allTopics,
+        suggestion: allTopics.length > 0 ? `Did you mean one of these? ${allTopics.join(', ')}` : 'No topics available'
+      });
+    }
+    
+    console.log('Matched topic with correct case:', matchedTopic);
+    
+    // Now query with the exact topic name from the database
+    const questions = await db.collection('questions').aggregate([
+      { $match: { topic: matchedTopic } },
+      { $sample: { size: 5 } }
+    ]).toArray();
+    
+    console.log(`Found ${questions.length} questions for topic: ${matchedTopic}`);
+    
+    if (questions.length === 0) {
+      return res.status(404).json({ 
+        error: `No questions found for topic: ${matchedTopic}`,
+        availableTopics: allTopics
+      });
+    }
+    
+    res.json(questions);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch questions' });
+    console.error('Error fetching questions:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Notes endpoints
 app.get('/api/notes', authenticateToken, async (req, res) => {
   try {
+    const db = await connectToMongo();
     const notes = await db.collection('notes')
       .find({ user_id: req.user._id })
       .sort({ updated_at: -1 })
@@ -461,6 +494,7 @@ app.post('/api/notes', authenticateToken, async (req, res) => {
   }
 
   try {
+    const db = await connectToMongo();
     const now = new Date();
     const result = await db.collection('notes').insertOne({
       user_id: req.user._id,
@@ -486,6 +520,7 @@ app.patch('/api/notes/:id', authenticateToken, async (req, res) => {
   }
 
   try {
+    const db = await connectToMongo();
     const updateData = { updated_at: new Date() };
     if (title) updateData.title = title;
     if (content) updateData.content = content;
@@ -510,6 +545,7 @@ app.patch('/api/notes/:id', authenticateToken, async (req, res) => {
 app.delete('/api/notes/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
+    const db = await connectToMongo();
     const result = await db.collection('notes').deleteOne({ _id: new ObjectId(id), user_id: req.user._id });
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: 'Note not found or not owned by user' });
@@ -592,19 +628,19 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
 
     const rawFeedback = completion.choices[0].message.content;
 
-// Clean up possible markdown or extra quotes
-const cleaned = rawFeedback
-  .replace(/```json/i, '')
-  .replace(/```/g, '')
-  .trim();
+    // Clean up possible markdown or extra quotes
+    const cleaned = rawFeedback
+      .replace(/```json/i, '')
+      .replace(/```/g, '')
+      .trim();
 
-try {
-  const feedbackJson = JSON.parse(cleaned);
-  res.json({ feedback: feedbackJson });
-} catch (e) {
-  console.error("❌ Failed to parse AI JSON response:", cleaned);
-  res.status(500).json({ error: 'The AI returned an invalid JSON format.' });
-}
+    try {
+      const feedbackJson = JSON.parse(cleaned);
+      res.json({ feedback: feedbackJson });
+    } catch (e) {
+      console.error("❌ Failed to parse AI JSON response:", cleaned);
+      res.status(500).json({ error: 'The AI returned an invalid JSON format.' });
+    }
 
   } catch (err) {
     console.error('Error analyzing transcript with AI:', err);
@@ -616,6 +652,7 @@ try {
 // Debug endpoint to check database connection and question structure
 app.get('/api/debug/questions', async (req, res) => {
   try {
+    const db = await connectToMongo();
     // Check if collection exists
     const collections = await db.listCollections({ name: 'questions' }).toArray();
     if (collections.length === 0) {
@@ -651,6 +688,7 @@ app.get('/api/debug/questions', async (req, res) => {
 // Get all unique topics
 app.get('/api/topics', authenticateToken, async (req, res) => {
   try {
+    const db = await connectToMongo();
     const topics = await db.collection('questions').distinct('topic');
     res.json({ topics });
   } catch (err) {
@@ -659,50 +697,6 @@ app.get('/api/topics', authenticateToken, async (req, res) => {
       error: 'Internal server error',
       details: err.message 
     });
-  }
-});
-
-app.get('/api/questions', authenticateToken, async (req, res) => {
-  let { topic } = req.query;
-  console.log('Original requested topic:', topic);
-  
-  try {
-    // Get all available topics for case-insensitive comparison
-    const allTopics = await db.collection('questions').distinct('topic');
-    console.log('All available topics in DB:', allTopics);
-    
-    // Find the correct case of the topic (case-insensitive match)
-    const matchedTopic = allTopics.find(t => t.toLowerCase() === topic.toLowerCase());
-    
-    if (!matchedTopic) {
-      return res.status(404).json({ 
-        error: `Topic not found: ${topic}`,
-        availableTopics: allTopics,
-        suggestion: allTopics.length > 0 ? `Did you mean one of these? ${allTopics.join(', ')}` : 'No topics available'
-      });
-    }
-    
-    console.log('Matched topic with correct case:', matchedTopic);
-    
-    // Now query with the exact topic name from the database
-    const questions = await db.collection('questions').aggregate([
-      { $match: { topic: matchedTopic } },
-      { $sample: { size: 5 } }
-    ]).toArray();
-    
-    console.log(`Found ${questions.length} questions for topic: ${matchedTopic}`);
-    
-    if (questions.length === 0) {
-      return res.status(404).json({ 
-        error: `No questions found for topic: ${matchedTopic}`,
-        availableTopics: allTopics
-      });
-    }
-    
-    res.json(questions);
-  } catch (err) {
-    console.error('Error fetching questions:', err);
-    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -754,49 +748,12 @@ app.post('/api/feedback', async (req, res) => {
   }
 });
 
-// Start server with graceful shutdown
-const PORT = 3001;
-let server;
-
-async function startServer() {
-  try {
-    await connectToMongo();
-    server = app.listen(PORT, () => {
-      console.log(`API running on http://localhost:${PORT}`);
-    });
-
-    // Handle server errors
-    server.on('error', (err) => {
-      console.error('Server error:', err);
-      if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use`);
-        process.exit(1);
-      }
-    });
-
-    // Graceful shutdown
-    process.on('SIGTERM', shutdown);
-    process.on('SIGINT', shutdown);
-  } catch (err) {
-    console.error('Failed to start server:', err);
-    process.exit(1);
-  }
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 3001;
+  app.listen(PORT, () => {
+    console.log(`API running on http://localhost:${PORT}`);
+  });
 }
 
-async function shutdown() {
-  console.log('Shutting down gracefully...');
-  if (server) {
-    server.close(() => {
-      console.log('Server closed');
-    });
-  }
-  try {
-    await client.close();
-    console.log('MongoDB connection closed');
-  } catch (err) {
-    console.error('Error closing MongoDB connection:', err);
-  }
-  process.exit(0);
-}
-
-startServer().catch(console.error);
+export default app;
