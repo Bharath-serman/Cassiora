@@ -663,6 +663,76 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
     }
 })
 
+// Debug endpoint to check database connection and question structure
+app.get('/api/debug/questions', async (req, res) => {
+    try {
+        const { topic } = req.query;
+        const db = await connectToMongo();
+
+        // Debug DB info
+        const dbStats = {
+            dbName: db.databaseName,
+            collectionCount: await db.collection('questions').countDocuments()
+        };
+
+        // Get all unique topics
+        const topics = await db.collection('questions').distinct('topic');
+
+        // Analyze topics for hidden characters
+        const topicsAnalysis = topics.map(t => ({
+            value: t,
+            length: t.length,
+            charCodes: t.split('').map(c => c.charCodeAt(0))
+        }));
+
+        let topicDebug = null;
+        if (topic) {
+            // Find match in distinct list
+            const matchedTopic = topics.find(t => t.toLowerCase().trim() === topic.toLowerCase().trim());
+
+            // Try explicit find with various strategies
+            const exactCount = await db.collection('questions').countDocuments({ topic: topic });
+
+            let matchedTopicCount = 0;
+            let questionsFound = [];
+
+            if (matchedTopic) {
+                matchedTopicCount = await db.collection('questions').countDocuments({ topic: matchedTopic });
+                questionsFound = await db.collection('questions').find({ topic: matchedTopic }).limit(5).toArray();
+            }
+
+            // Regex wildcard search
+            const regexCount = await db.collection('questions').countDocuments({ topic: { $regex: new RegExp(topic, 'i') } });
+
+            topicDebug = {
+                requestedTopic: topic,
+                requestedTopicCharCodes: topic.split('').map(c => c.charCodeAt(0)),
+                matchedTopicInDistinct: matchedTopic,
+                matchedTopicCharCodes: matchedTopic ? matchedTopic.split('').map(c => c.charCodeAt(0)) : null,
+                counts: {
+                    exactRequest: exactCount,
+                    matchedFromDistinct: matchedTopicCount,
+                    regexWildcard: regexCount
+                },
+                sampleFromMatch: questionsFound
+            };
+        }
+
+        res.json({
+            dbStats,
+            allTopics: topicsAnalysis,
+            topicDebug
+        });
+    } catch (err) {
+        console.error('Debug error:', err);
+        res.status(500).json({
+            error: 'Debug error',
+            message: err.message,
+            stack: err.stack
+        });
+    }
+});
+
 // Get all unique topics
 app.get('/api/topics', authenticateToken, async (req, res) => {
     try {
