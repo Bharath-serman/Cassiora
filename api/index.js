@@ -459,8 +459,8 @@ app.get('/api/questions', authenticateToken, async (req, res) => {
 
         // Fallback: Try straight regex if no results
         if (allQuestions.length === 0) {
-             console.log("Exact match with distinct value failed, trying regex");
-             allQuestions = await db.collection('questions').find({ topic: { $regex: new RegExp(`^${topic}$`, 'i') } }).toArray();
+            console.log("Exact match with distinct value failed, trying regex");
+            allQuestions = await db.collection('questions').find({ topic: { $regex: new RegExp(`^${topic}$`, 'i') } }).toArray();
         }
 
         if (allQuestions.length === 0) {
@@ -661,55 +661,7 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
         console.error('Error analyzing transcript with AI:', err);
         res.status(500).json({ error: 'Failed to analyze transcript.' });
     }
-});
-// Debug endpoint to check database connection and question structure
-app.get('/api/debug/questions', async (req, res) => {
-    try {
-        const { topic } = req.query;
-        const db = await connectToMongo();
-
-        // Check if collection exists
-        const collections = await db.listCollections({ name: 'questions' }).toArray();
-        if (collections.length === 0) {
-            return res.status(404).json({ error: 'Questions collection not found' });
-        }
-
-        // Get count of all questions
-        const count = await db.collection('questions').countDocuments();
-
-        // Get all unique topics
-        const topics = await db.collection('questions').distinct('topic');
-
-        let topicDebug = null;
-        if (topic) {
-            const matchedTopic = topics.find(t => t.toLowerCase() === topic.toLowerCase());
-            const exactMatchCount = await db.collection('questions').countDocuments({ topic: topic });
-            const matchedTopicCount = matchedTopic ? await db.collection('questions').countDocuments({ topic: matchedTopic }) : 0;
-
-            topicDebug = {
-                requestedTopic: topic,
-                matchedTopic: matchedTopic,
-                exactMatchCount: exactMatchCount,
-                matchedTopicCount: matchedTopicCount,
-                sample: matchedTopic ? await db.collection('questions').find({ topic: matchedTopic }).limit(2).toArray() : []
-            };
-        }
-
-        res.json({
-            collectionExists: true,
-            totalQuestions: count,
-            allTopics: topics,
-            topicDebug: topicDebug
-        });
-    } catch (err) {
-        console.error('Debug error:', err);
-        res.status(500).json({
-            error: 'Debug error',
-            message: err.message,
-            stack: err.stack
-        });
-    }
-});
+})
 
 // Get all unique topics
 app.get('/api/topics', authenticateToken, async (req, res) => {
