@@ -454,19 +454,20 @@ app.get('/api/questions', authenticateToken, async (req, res) => {
         console.log('Matched topic with correct case:', matchedTopic);
 
         // Now query with the exact topic name from the database
-        const questions = await db.collection('questions').aggregate([
-            { $match: { topic: matchedTopic } },
-            { $sample: { size: 5 } }
-        ]).toArray();
+        // Use standard find() instead of aggregate to avoid potential $sample issues on M0 free tier
+        const allQuestions = await db.collection('questions').find({ topic: matchedTopic }).toArray();
 
-        console.log(`Found ${questions.length} questions for topic: ${matchedTopic}`);
+        console.log(`Found ${allQuestions.length} questions for topic: ${matchedTopic}`);
 
-        if (questions.length === 0) {
+        if (allQuestions.length === 0) {
             return res.status(404).json({
                 error: `No questions found for topic: ${matchedTopic}`,
                 availableTopics: allTopics
             });
         }
+
+        // Shuffle and take 5 random questions
+        const questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 5);
 
         res.json(questions);
     } catch (err) {
@@ -651,12 +652,12 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Failed to analyze transcript.' });
     }
 });
-
-// Test endpoints
 // Debug endpoint to check database connection and question structure
 app.get('/api/debug/questions', async (req, res) => {
     try {
+        const { topic } = req.query;
         const db = await connectToMongo();
+
         // Check if collection exists
         const collections = await db.listCollections({ name: 'questions' }).toArray();
         if (collections.length === 0) {
@@ -666,18 +667,29 @@ app.get('/api/debug/questions', async (req, res) => {
         // Get count of all questions
         const count = await db.collection('questions').countDocuments();
 
-        // Get sample of questions
-        const sample = await db.collection('questions').find({}).limit(2).toArray();
-
         // Get all unique topics
         const topics = await db.collection('questions').distinct('topic');
+
+        let topicDebug = null;
+        if (topic) {
+            const matchedTopic = topics.find(t => t.toLowerCase() === topic.toLowerCase());
+            const exactMatchCount = await db.collection('questions').countDocuments({ topic: topic });
+            const matchedTopicCount = matchedTopic ? await db.collection('questions').countDocuments({ topic: matchedTopic }) : 0;
+
+            topicDebug = {
+                requestedTopic: topic,
+                matchedTopic: matchedTopic,
+                exactMatchCount: exactMatchCount,
+                matchedTopicCount: matchedTopicCount,
+                sample: matchedTopic ? await db.collection('questions').find({ topic: matchedTopic }).limit(2).toArray() : []
+            };
+        }
 
         res.json({
             collectionExists: true,
             totalQuestions: count,
-            sampleQuestions: sample,
             allTopics: topics,
-            firstTopicSample: topics.length > 0 ? topics[0] : null
+            topicDebug: topicDebug
         });
     } catch (err) {
         console.error('Debug error:', err);
