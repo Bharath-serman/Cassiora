@@ -455,14 +455,24 @@ app.get('/api/questions', authenticateToken, async (req, res) => {
 
         // Now query with the exact topic name from the database
         // Use standard find() instead of aggregate to avoid potential $sample issues on M0 free tier
-        const allQuestions = await db.collection('questions').find({ topic: matchedTopic }).toArray();
+        let allQuestions = await db.collection('questions').find({ topic: matchedTopic }).toArray();
 
-        console.log(`Found ${allQuestions.length} questions for topic: ${matchedTopic}`);
+        // Fallback: Try straight regex if no results
+        if (allQuestions.length === 0) {
+             console.log("Exact match with distinct value failed, trying regex");
+             allQuestions = await db.collection('questions').find({ topic: { $regex: new RegExp(`^${topic}$`, 'i') } }).toArray();
+        }
 
         if (allQuestions.length === 0) {
+            // Debugging: fetch ONE question from DB to see its structure
+            const oneQ = await db.collection('questions').findOne({});
             return res.status(404).json({
-                error: `No questions found for topic: ${matchedTopic}`,
-                availableTopics: allTopics
+                error: `No questions found for topic: ${topic}`,
+                matchedTopicFoundInDistinct: matchedTopic,
+                availableTopics: allTopics,
+                debugSampleQuestion: oneQ,
+                dbName: db.databaseName,
+                collectionCount: await db.collection('questions').countDocuments()
             });
         }
 
