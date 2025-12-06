@@ -479,7 +479,7 @@ app.get('/api/questions', authenticateToken, async (req, res) => {
         // Shuffle and take 5 random questions
         const questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 5);
 
-        res.json(questions);
+        res.json({ questions });
     } catch (err) {
         console.error('Error fetching questions:', err);
         res.status(500).json({ error: 'Internal server error' });
