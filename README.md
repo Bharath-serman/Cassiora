@@ -1,4 +1,4 @@
-# Welcome to Spideo
+# Welcome to Cassiora
 
 This is your personalized coding streak and DSA prep app. Make it your own!
 
