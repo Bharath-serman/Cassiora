@@ -761,38 +761,9 @@ app.post('/api/chat', async (req, res) => {
         });
         res.json(completion);
     } catch (err) {
+    } catch (err) {
         console.error('Error in /api/chat:', err);
         res.status(500).json({ error: 'Failed to get chat completion.' });
-    }
-});
-
-// Feedback endpoint
-app.post('/api/feedback', async (req, res) => {
-    const { email, message } = req.body;
-
-    if (!email || !message) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    try {
-        // Send email
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER || 'your-email@gmail.com',
-            to: 'bharathserman@gmail.com',
-            subject: 'New Feedback from Cassiora Practice',
-            text: `Feedback from: ${email}\n\nMessage:\n${message}`,
-            html: `
-        <h3>New Feedback from Cassiora Practice</h3>
-        <p><strong>From:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
-      `
-        });
-
-        res.json({ success: true });
-    } catch (err) {
-        console.error('Error sending feedback email:', err);
-        res.status(500).json({ error: 'Failed to send feedback' });
     }
 });
 
@@ -805,12 +776,13 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
     }
 
     // Map common names to Piston versions/names
-    // We use "*" to let Piston pick the latest available version, which is usually safe for competitive programming problems
+    // Piston requires specific versions, "*" might not work reliably or at all on v2.
+    // Based on common Piston runtimes:
     const languageMap = {
-        'python': { language: 'python', version: '*' },
-        'java': { language: 'java', version: '*' },
-        'c': { language: 'c', version: '*' },
-        'cpp': { language: 'cpp', version: '*' },
+        'python': { language: 'python', version: '3.10.0' },
+        'java': { language: 'java', version: '15.0.2' },
+        'c': { language: 'gcc', version: '10.2.0' },
+        'cpp': { language: 'gcc', version: '10.2.0' }, // C++ often invoked via gcc/g++ in Piston
     };
 
     const config = languageMap[language.toLowerCase()];
@@ -820,14 +792,7 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
 
     try {
         const results = [];
-
-        // Process test cases sequentially
-        // Note: For heavier loads, we might want to run these in parallel, but sequential is safer for rate limits
         const cases = testCases && Array.isArray(testCases) ? testCases : [];
-
-        // If no test cases provided (e.g. just "Run"), maybe run once with empty input? 
-        // The frontend seems to always provide test cases or at least sample input if available.
-        // If cases is empty, we force one run with empty input to see output.
         const inputsToRun = cases.length > 0 ? cases : [{ input: '', expectedOutput: '' }];
 
         for (const testCase of inputsToRun) {
@@ -851,8 +816,16 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
             });
 
             if (!response.ok) {
-                console.error("Piston API failed:", response.status, await response.text());
-                throw new Error(`Compiler service unavailable (${response.status})`);
+                // IMPORTANT: Read the error text to understand why it failed
+                const errorText = await response.text();
+                console.error("Piston API failed:", response.status, errorText);
+
+                // If version not found, Piston usually returns 400
+                if (response.status === 400 && errorText.includes("Runtime not found")) {
+                    throw new Error(`Compiler configuration error: Runtime ${config.language} v${config.version} not found. Please contact support.`);
+                }
+
+                throw new Error(`Compiler service unavailable (${response.status}): ${errorText}`);
             }
 
             const data = await response.json();
@@ -889,6 +862,36 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
     } catch (err) {
         console.error('Compiler error:', err);
         res.status(500).json({ error: 'Failed to execute code: ' + err.message });
+    }
+});
+
+// Feedback endpoint
+app.post('/api/feedback', async (req, res) => {
+    const { email, message } = req.body;
+
+    if (!email || !message) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    try {
+        // Send email
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER || 'your-email@gmail.com',
+            to: 'bharathserman@gmail.com',
+            subject: 'New Feedback from Cassiora Practice',
+            text: `Feedback from: ${email}\n\nMessage:\n${message}`,
+            html: `
+        <h3>New Feedback from Cassiora Practice</h3>
+        <p><strong>From:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+      `
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error sending feedback email:', err);
+        res.status(500).json({ error: 'Failed to send feedback' });
     }
 });
 
