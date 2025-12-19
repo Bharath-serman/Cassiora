@@ -1,4 +1,4 @@
-# Welcome to Spideo
+# Welcome to Cassiora
 
 This is your personalized coding streak and DSA prep app. Make it your own!
 
@@ -18,13 +18,13 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/Bharath-serman/Cassiora.git
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd Cassiora
 
 # Step 3: Install the necessary dependencies.
-npm i
+npm install
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
@@ -67,3 +67,11 @@ To run we need three cmd terminals :
 1. npm run dev (Frontend)
 2. cd compiler-service -> npm start (For coding compilers)
 3. node server.js (For backend (MongoDB))
+
+## Screenshots
+
+<img width="950" height="443" alt="image" src="https://github.com/user-attachments/assets/c2075782-e507-4691-8302-85e1930cd6fd" />
+<br></br>
+<img width="953" height="440" alt="image" src="https://github.com/user-attachments/assets/296794c9-4ccf-4cc3-8fbb-4511e711ff02" />
+<br></br>
+<img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/f1dd39ed-d741-4bff-a4ce-eaec53ceb4fe" />
