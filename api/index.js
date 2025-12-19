@@ -796,6 +796,102 @@ app.post('/api/feedback', async (req, res) => {
     }
 });
 
+// Compiler endpoint using Piston API
+app.post('/api/compile', authenticateToken, async (req, res) => {
+    const { code, language, testCases } = req.body;
+
+    if (!code || !language) {
+        return res.status(400).json({ error: 'Code and language are required' });
+    }
+
+    // Map common names to Piston versions/names
+    // We use "*" to let Piston pick the latest available version, which is usually safe for competitive programming problems
+    const languageMap = {
+        'python': { language: 'python', version: '*' },
+        'java': { language: 'java', version: '*' },
+        'c': { language: 'c', version: '*' },
+        'cpp': { language: 'cpp', version: '*' },
+    };
+
+    const config = languageMap[language.toLowerCase()];
+    if (!config) {
+        return res.status(400).json({ error: `Unsupported language: ${language}` });
+    }
+
+    try {
+        const results = [];
+
+        // Process test cases sequentially
+        // Note: For heavier loads, we might want to run these in parallel, but sequential is safer for rate limits
+        const cases = testCases && Array.isArray(testCases) ? testCases : [];
+
+        // If no test cases provided (e.g. just "Run"), maybe run once with empty input? 
+        // The frontend seems to always provide test cases or at least sample input if available.
+        // If cases is empty, we force one run with empty input to see output.
+        const inputsToRun = cases.length > 0 ? cases : [{ input: '', expectedOutput: '' }];
+
+        for (const testCase of inputsToRun) {
+            const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    language: config.language,
+                    version: config.version,
+                    files: [
+                        {
+                            content: code
+                        }
+                    ],
+                    stdin: testCase.input || '',
+                    args: [],
+                    compile_timeout: 10000,
+                    run_timeout: 3000,
+                    memory_limit: 128 * 1024 * 1024,
+                })
+            });
+
+            if (!response.ok) {
+                console.error("Piston API failed:", response.status, await response.text());
+                throw new Error(`Compiler service unavailable (${response.status})`);
+            }
+
+            const data = await response.json();
+
+            // data.run contains { stdout, stderr, code, signal, ... }
+            // data.compile contains { stdout, stderr, code, ... } (if compiled)
+
+            const runOutput = data.run?.stdout || '';
+            const runError = data.run?.stderr || '';
+            const compileError = data.compile?.stderr || ''; // For C/C++ specifically
+
+            // Combine errors
+            const error = compileError || runError;
+
+            // Check correctness
+            const outputTrimmed = runOutput.trim();
+            const expectedTrimmed = (testCase.expectedOutput || '').trim();
+
+            // If we are just running without test cases (cases.length === 0 originally), 
+            // we effectively just return the output.
+            // But if we have expectedOutput, we check equality.
+            const passed = expectedTrimmed ? outputTrimmed === expectedTrimmed : true;
+
+            results.push({
+                input: testCase.input,
+                output: outputTrimmed,
+                expectedOutput: testCase.expectedOutput,
+                passed,
+                error: error || (data.run?.code !== 0 ? 'Runtime Error' : undefined)
+            });
+        }
+
+        res.json({ results });
+    } catch (err) {
+        console.error('Compiler error:', err);
+        res.status(500).json({ error: 'Failed to execute code: ' + err.message });
+    }
+});
+
 // For local development
 if (process.env.NODE_ENV !== 'production') {
     const PORT = 3001;

@@ -541,9 +541,9 @@ export default function TestPage() {
                   }
                   setAnswers(prev => ({ ...prev, [currentQuestion]: { loading: true } }));
                   try {
-                    const res = await fetch('http://localhost:3002/api/compile', {
+                    const res = await fetch('/api/compile', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                       body: JSON.stringify({ code, language, testCases: actualTestCases }),
                     });
                     const data = await res.json();
@@ -572,8 +572,8 @@ export default function TestPage() {
                       <li
                         key={i}
                         className={`p-3 rounded border w-full max-w-full ${r.passed
-                            ? 'border-green-500 bg-green-100 dark:bg-green-900/50'
-                            : 'border-red-500 bg-red-100 dark:bg-red-900/50'
+                          ? 'border-green-500 bg-green-100 dark:bg-green-900/50'
+                          : 'border-red-500 bg-red-100 dark:bg-red-900/50'
                           }`}
                       >
                         <div className="font-semibold">
