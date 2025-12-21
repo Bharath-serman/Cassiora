@@ -249,16 +249,16 @@ export default function Index() {
                   <circle cx="17" cy="7" r="1.5" fill="currentColor" />
                 </svg>
               </a>
-              <a href="#" aria-label="GitHub" className="hover:text-primary transition">
+              <a href="https://github.com/Bharath-serman" aria-label="GitHub" className="hover:text-primary transition">
                 {/* GitHub SVG */}
                 <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.26c0 4.48 2.87 8.28 6.84 9.63.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05 .89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85.004 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.89 0 1.36-.01 2.45-.01 2.78 0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z" />
                 </svg>
               </a>
-              <a href="#" aria-label="Twitter" className="hover:text-primary transition">
-                {/* X (Twitter) SVG */}
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path fill="currentColor" d="M17.53 2H21L13.47 10.39L22 22H15.68L10.44 15.18L4.56 22H1L9.04 13.04L0 2H6.5L11.28 8.22L17.53 2ZM16.32 20H18.2L6.8 4H4.78L16.32 20Z" />
+              <a href="https://www.duolingo.com/profile/TA_SPIDEY" aria-label="Duolingo" className="hover:text-primary transition">
+                {/* Duolingo SVG */}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M12.04 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm3.8 15.6c-.6.8-1.7 1.4-2.9 1.4-1.2 0-2.3-.6-2.9-1.4-.2-.3-.1-.7.2-1 .3-.2.8-.2 1.1.1.3.4.9.7 1.6.7.7 0 1.3-.3 1.6-.7.3-.3.7-.4 1.1-.1.3.3.4.7.2 1zm1.2-4.6c0 1.1-.9 2-2 2s-2-.9-2-2c0-.7.4-1.4 1-1.7-.6-.3-1-1-1-1.7 0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.4-1 1.7.6.3 1 1 1 1.7zm-6 0c0 1.1-.9 2-2 2s-2-.9-2-2c0-.7.4-1.4 1-1.7-.6-.3-1-1-1-1.7 0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.4-1 1.7.6.3 1 1 1 1.7z" />
                 </svg>
               </a>
             </div>
