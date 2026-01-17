@@ -581,7 +581,7 @@ app.post('/api/interview/questions', authenticateToken, async (req, res) => {
 
     try {
         const completion = await openai.chat.completions.create({
-            model: 'mistralai/mistral-7b-instruct:free',
+            model: 'deepseek/deepseek-r1-0528:free',
             messages: [
                 {
                     role: 'system',
