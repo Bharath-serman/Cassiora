@@ -96,7 +96,7 @@ export default function Chatbot() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "mistralai/mistral-7b-instruct:free",
+          model: "deepseek/deepseek-r1-0528:free",  //Openrouter AI Model.
           messages: [
             { role: "system", content: "You are Violet, an expert AI assistant specializing in technical interviews, data structures and algorithms (DSA), artificial intelligence, machine learning, verbal reasoning, and communication skills. Give clear, deep, and practical answers to help users master these topics. For other topics, answer helpfully as a general AI assistant." },
             ...messages.map((msg) => ({
