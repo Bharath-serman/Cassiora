@@ -105,7 +105,7 @@ export default function Index() {
             <div className="flex-1 flex flex-col gap-3">
               <h2 className="text-3xl font-extrabold text-primary mb-1 drop-shadow-sm">About Cassiora</h2>
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-2">
-                Cassiora is a platform for mastering interviews and communication skills through realistic chat simulations, voice-enabled practice, and daily MCQ tests—all in a beautiful, motivating environment.
+                The Cassiora is a platform for mastering interviews and communication skills through realistic chat simulations, voice-enabled practice, and daily MCQ tests—all in a beautiful, motivating environment.
               </p>
               <ul className="list-disc pl-6 space-y-1 text-sm md:text-base text-muted-foreground/90">
                 <li>Interactive, voice-powered chat scenarios</li>
