@@ -1,6 +1,6 @@
 # Welcome to Cassiora
 
-This is your personalized coding streak and DSA prep app. Make it your own!
+This is your personalized coding streak and Placement prep app. Make it your own!
 
 **Use the Web App**
 
@@ -37,31 +37,6 @@ cd compiler-service
 npm start
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## Tech Stack
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-Feel free to customize and extend the project as you wish!
-
-
 To run we need three cmd terminals :
 
 1. npm run dev (Frontend)
@@ -75,3 +50,5 @@ To run we need three cmd terminals :
 <img width="953" height="440" alt="image" src="https://github.com/user-attachments/assets/296794c9-4ccf-4cc3-8fbb-4511e711ff02" />
 <br></br>
 <img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/f1dd39ed-d741-4bff-a4ce-eaec53ceb4fe" />
+
+## CASSIORA - CATCH UP TO YOUR DREAM JOB!
