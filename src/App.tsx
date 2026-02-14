@@ -23,6 +23,7 @@ import InterviewSpeakingPractice from "./components/InterviewSpeakingPractice";
 import { ThemeProvider } from "next-themes";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
         <UserProvider>
           <LoadingProvider>
             <BrowserRouter>
+              <ScrollToTop />
               <LoadingOverlay />
               <Navbar />
               <Routes>
@@ -51,7 +53,7 @@ const App = () => (
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/faq" element={<FaqPage />} />
-        <Route path="/roles" element={<RolesPage />} />
+                <Route path="/roles" element={<RolesPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

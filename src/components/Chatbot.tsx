@@ -96,7 +96,7 @@ export default function Chatbot() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "meta-llama/llama-3.3-70b-instruct:free",  //Openrouter AI Model.
+          model: "deepseek/deepseek-r1-0528:free",  //Openrouter AI Model.
           messages: [
             { role: "system", content: "You are Violet, an expert AI assistant specializing in technical interviews, data structures and algorithms (DSA), artificial intelligence, machine learning, verbal reasoning, and communication skills. Give clear, deep, and practical answers to help users master these topics. For other topics, answer helpfully as a general AI assistant." },
             ...messages.map((msg) => ({
@@ -163,14 +163,14 @@ export default function Chatbot() {
           <span className="flex items-center gap-2 text-lg font-bold text-primary dark:text-white">
             <svg width="30" height="30" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-1 align-middle"><circle cx="19" cy="19" r="18" fill="currentColor" className="text-primary dark:text-zinc-900 transition-colors" /><path d="M12 23c0-3 2.5-5 7-5s7 2 7 5v2.5a2.5 2.5 0 01-2.5 2.5h-9A2.5 2.5 0 0112 25.5V23z" fill="#fff" fillOpacity=".95" /><circle cx="15.5" cy="21" r="1.2" fill="#4f46e5" className="dark:fill-primary" /><circle cx="22.5" cy="21" r="1.2" fill="#4f46e5" className="dark:fill-primary" /><rect x="17" y="25" width="4" height="1.2" rx="0.6" fill="#4f46e5" className="dark:fill-primary" /></svg>
             Violet
-            <span className="ml-1 text-yellow-500 font-extrabold animate-pulse">●</span>
+            <span className="ml-1 text-violet-500 font-extrabold animate-pulse">●</span>
           </span>
           <button
             onClick={() => setFullscreen(f => !f)}
             className={fullscreen ? "ml-auto px-3 py-1 text-sm rounded bg-zinc-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors duration-200 border border-zinc-300 dark:border-zinc-700" : "ml-auto px-2 py-1 text-xs rounded bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors duration-200"}
             aria-label={fullscreen ? "Minimize chat" : "Fullscreen chat"}
           >
-            {fullscreen ? <>&times; Close</> : "Fullscreen"}
+            {fullscreen ? "Close" : "Fullscreen"}
           </button>
         </div>
         <div

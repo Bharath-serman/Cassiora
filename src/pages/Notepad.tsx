@@ -245,7 +245,7 @@ export default function NotepadPage() {
                 </>
               ) : (
                 <>
-                  <PlusCircle className="w-4 h-4 mr-2" />
+                  {/* <PlusCircle className="w-4 h-4 mr-2" /> */}
                   Create
                 </>
               )}

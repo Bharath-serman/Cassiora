@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import SkillRoadmapModal from "@/components/SkillRoadmapModal";
 
 // List of top growing roles for freshers in 2025
@@ -97,15 +99,14 @@ export default function RolesPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-6 flex justify-center">
-        <Link
-          to="/"
-          className="w-full max-w-xs px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-medium shadow hover:bg-blue-200 transition mb-2 text-center"
-        >
-          ← Back to Home
-        </Link>
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="icon" asChild>
+          <Link to="/">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+        </Button>
+        <h1 className="text-3xl font-bold text-primary">Top Growing Roles for Freshers (2026)</h1>
       </div>
-      <h1 className="text-3xl font-bold mb-6 text-primary">Top Growing Roles for Freshers (2025)</h1>
       <div className="space-y-8">
         {roles.map((role, idx) => (
           <div key={idx} className="bg-card/80 p-6 rounded-xl border shadow">

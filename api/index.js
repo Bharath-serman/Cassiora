@@ -627,7 +627,7 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
         const formattedTranscript = transcript.map(t => `Q: ${t.question}\nA: ${t.answer}`).join('\n\n');
 
         const completion = await openai.chat.completions.create({
-            model: 'anthropic/claude-3-haiku',
+            model: 'deepseek/deepseek-r1-0528:free',
             messages: [
                 {
                     role: 'system',
@@ -756,7 +756,7 @@ app.post('/api/chat', async (req, res) => {
     }
     try {
         const completion = await openai.chat.completions.create({
-            model: model || "deepseek/deepseek-r1-0528:free",
+            model: model || "qwen/qwen3-4b:free",
             messages,
         });
         res.json(completion);

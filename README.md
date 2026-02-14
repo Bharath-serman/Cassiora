@@ -30,7 +30,7 @@ npm install
 npm run dev
 
 # Step 5: Start the backend server.
-node server.js
+npm run server
 
 # Step 6: Start the compiler service.
 cd compiler-service

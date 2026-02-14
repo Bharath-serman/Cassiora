@@ -156,7 +156,7 @@ export default function Index() {
           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { showLoading(); navigate('/roles'); } }}
           aria-label="View Top Growing Roles for Freshers (2025)"
         >
-          <h2 className="text-2xl font-bold mb-2"> Top Growing Roles for Freshers (2025)</h2>
+          <h2 className="text-2xl font-bold mb-2"> Top Growing Roles for Freshers (2026)</h2>
           <p className="text-base opacity-90">Explore the most in-demand career roles, required skills, and how to prepare for your future!</p>
           <span className="inline-block mt-3 px-5 py-2 bg-white/20 rounded-full font-semibold text-white border border-white/30">View Roles</span>
         </div>
@@ -177,11 +177,11 @@ export default function Index() {
         {showFeedback && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="fixed inset-0 bg-black/50" onClick={() => setShowFeedback(false)} />
-            <div className="relative bg-background p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div className="relative bg-background p-19 rounded-lg shadow-lg max-w-md w-full">
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2"
+                className="absolute top-4 right-4"
                 onClick={() => setShowFeedback(false)}
               >
                 <X className="h-5 w-5" />
@@ -224,7 +224,7 @@ export default function Index() {
                 navigate('/roles');
               }}
             >
-              Top Roles 2025
+              Top Roles 2026
             </span>
           </div>
 
