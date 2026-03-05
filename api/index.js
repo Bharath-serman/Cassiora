@@ -579,27 +579,46 @@ app.post('/api/interview/questions', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: 'Role is required' });
     }
 
+    // try {
+    //     const completion = await openai.chat.completions.create({
+    //         model: "meta-llama/llama-3.1-8b-instruct:free",   //deepseek/deepseek-r1 (This is an paid model.)
+    //         messages: [
+    //             {
+    //                 role: 'system',
+    //                 content: 'You are an expert interviewer. Your ONLY task is to generate a set of 10 interview questions for a specific job role. The questions should be divided into two categories: 5 general HR questions and 5 technical questions relevant to the role. Respond ONLY with a valid JSON object, no explanation, no markdown, no extra text. The JSON object must have a single key, "questions", which is an array of 10 strings. Example: {"questions": ["question 1", "question 2", ...]}',
+    //             },
+    //             {
+    //                 role: 'user',
+    //                 content: `Generate questions for the role: ${role}`,
+    //             },
+    //         ],
+    //     });
+
     try {
         const completion = await openai.chat.completions.create({
-            model: "deepseek/deepseek-r1",
+            model: "arcee-ai/trinity-large-preview:free",
             messages: [
                 {
-                    role: 'system',
-                    content: 'You are an expert interviewer. Your ONLY task is to generate a set of 10 interview questions for a specific job role. The questions should be divided into two categories: 5 general HR questions and 5 technical questions relevant to the role. Respond ONLY with a valid JSON object, no explanation, no markdown, no extra text. The JSON object must have a single key, "questions", which is an array of 10 strings. Example: {"questions": ["question 1", "question 2", ...]}',
-                },
-                {
-                    role: 'user',
-                    content: `Generate questions for the role: ${role}`,
-                },
+                    role: "user",
+                    content: `Generate 10 interview questions for ${role} in JSON format like {"questions":["q1","q2"]}. Return ONLY the JSON object, without any markdown formatting, explanations, or additional text.`
+                }
             ],
+            max_tokens: 1500
         });
 
-        const rawResponse = completion.choices[0].message.content;
+        const rawResponse = completion?.choices?.[0]?.message?.content || "";
         try {
-            // Extract the first JSON object from the AI response
-            const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) throw new Error('No JSON object found in AI response');
-            const jsonResponse = JSON.parse(jsonMatch[0]);
+            // Robustly extract JSON object from AI response
+            let cleaned = rawResponse.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+            const jsonBlockMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+            if (jsonBlockMatch && jsonBlockMatch[1]) cleaned = jsonBlockMatch[1].trim();
+            const start = cleaned.indexOf('{');
+            const end = cleaned.lastIndexOf('}');
+            if (start !== -1 && end !== -1 && end >= start) {
+                cleaned = cleaned.substring(start, end + 1);
+            }
+
+            const jsonResponse = JSON.parse(cleaned);
             if (!jsonResponse.questions || !Array.isArray(jsonResponse.questions)) {
                 throw new Error('Invalid JSON structure from AI.');
             }
@@ -638,22 +657,26 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
                     content: formattedTranscript,
                 },
             ],
-            response_format: { type: 'json_object' },
+            // Removed response_format: { type: 'json_object' } because free models largely do not support it and it throws 400 Bad Request
         });
 
         const rawFeedback = completion.choices[0].message.content;
 
-        // Clean up possible markdown or extra quotes
-        const cleaned = rawFeedback
-            .replace(/```json/i, '')
-            .replace(/```/g, '')
-            .trim();
-
         try {
+            // Robustly extract JSON object from AI response
+            let cleaned = rawFeedback.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+            const jsonBlockMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+            if (jsonBlockMatch && jsonBlockMatch[1]) cleaned = jsonBlockMatch[1].trim();
+            const start = cleaned.indexOf('{');
+            const end = cleaned.lastIndexOf('}');
+            if (start !== -1 && end !== -1 && end >= start) {
+                cleaned = cleaned.substring(start, end + 1);
+            }
+
             const feedbackJson = JSON.parse(cleaned);
             res.json({ feedback: feedbackJson });
         } catch (e) {
-            console.error("❌ Failed to parse AI JSON response:", cleaned);
+            console.error("❌ Failed to parse AI JSON response:", rawFeedback);
             res.status(500).json({ error: 'The AI returned an invalid JSON format.' });
         }
 
