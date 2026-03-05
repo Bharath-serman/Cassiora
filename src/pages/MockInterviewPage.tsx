@@ -139,7 +139,8 @@ const MockInterviewPage = () => {
 
       if (!response.ok) throw new Error('Analysis failed');
       const result = await response.json();
-      setAnalysisResult(result.feedback);
+      //setAnalysisResult(result.feedback);
+      setAnalysisResult(result.feedback || result);
     } catch (error) {
       console.error('Error analyzing transcript:', error);
     } finally {

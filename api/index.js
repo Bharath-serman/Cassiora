@@ -646,7 +646,7 @@ app.post('/api/interview/analyze', authenticateToken, async (req, res) => {
         const formattedTranscript = transcript.map(t => `Q: ${t.question}\nA: ${t.answer}`).join('\n\n');
 
         const completion = await openai.chat.completions.create({
-            model: "google/gemma-3-4b-it:free",
+            model: "arcee-ai/trinity-large-preview:free",
             messages: [
                 {
                     role: 'system',
