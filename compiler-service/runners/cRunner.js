@@ -6,7 +6,7 @@ import tmp from 'tmp-promise';
 export async function runC(code, testCases) {
   const dir = await tmp.dir();
   const filePath = path.join(dir.path, 'main.c');
-  const outPath = path.join(dir.path, 'main.out');
+  const outPath = path.join(dir.path, 'main.exe');
   await fs.writeFile(filePath, code);
   const compileCmd = `gcc ${filePath} -o ${outPath}`;
   let compileError = '';

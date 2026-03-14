@@ -6,7 +6,7 @@ import tmp from 'tmp-promise';
 export async function runCpp(code, testCases) {
   const dir = await tmp.dir();
   const filePath = path.join(dir.path, 'main.cpp');
-  const outPath = path.join(dir.path, 'main.out');
+  const outPath = path.join(dir.path, 'main.exe');
   await fs.writeFile(filePath, code);
   const compileCmd = `g++ ${filePath} -o ${outPath}`;
   let compileError = '';

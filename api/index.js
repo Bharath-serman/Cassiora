@@ -819,7 +819,7 @@ app.post('/api/feedback', async (req, res) => {
     }
 });
 
-// Compiler endpoint using Piston API
+// Compiler endpoint using JDoodle API
 app.post('/api/compile', authenticateToken, async (req, res) => {
     const { code, language, testCases } = req.body;
 
@@ -827,13 +827,21 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: 'Code and language are required' });
     }
 
-    // Map common names to Piston versions/names
-    // We use "*" to let Piston pick the latest available version, which is usually safe for competitive programming problems
+    const clientId = process.env.JDOODLE_CLIENT_ID;
+    const clientSecret = process.env.JDOODLE_CLIENT_SECRET;
+
+    if (!clientId || !clientSecret) {
+        return res.status(500).json({
+            error: 'Compiler API keys are missing. Please configure JDOODLE_CLIENT_ID and JDOODLE_CLIENT_SECRET in your dashboard/env.'
+        });
+    }
+
+    // JDoodle language mapping
     const languageMap = {
-        'python': { language: 'python', version: '*' },
-        'java': { language: 'java', version: '*' },
-        'c': { language: 'c', version: '*' },
-        'cpp': { language: 'cpp', version: '*' },
+        'python': { language: 'python3', versionIndex: '3' },
+        'java': { language: 'java', versionIndex: '4' },
+        'c': { language: 'c', versionIndex: '5' },
+        'cpp': { language: 'cpp', versionIndex: '5' },
     };
 
     const config = languageMap[language.toLowerCase()];
@@ -843,60 +851,43 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
 
     try {
         const results = [];
+        const cases = testCases && Array.isArray(testCases) && testCases.length > 0
+            ? testCases
+            : [{ input: '', expectedOutput: '' }];
 
-        // Process test cases sequentially
-        // Note: For heavier loads, we might want to run these in parallel, but sequential is safer for rate limits
-        const cases = testCases && Array.isArray(testCases) ? testCases : [];
-
-        // If no test cases provided (e.g. just "Run"), maybe run once with empty input? 
-        // The frontend seems to always provide test cases or at least sample input if available.
-        // If cases is empty, we force one run with empty input to see output.
-        const inputsToRun = cases.length > 0 ? cases : [{ input: '', expectedOutput: '' }];
-
-        for (const testCase of inputsToRun) {
-            const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+        for (const testCase of cases) {
+            const response = await fetch('https://api.jdoodle.com/v1/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    clientId: clientId,
+                    clientSecret: clientSecret,
+                    script: code,
                     language: config.language,
-                    version: config.version,
-                    files: [
-                        {
-                            content: code
-                        }
-                    ],
-                    stdin: testCase.input || '',
-                    args: [],
-                    compile_timeout: 10000,
-                    run_timeout: 3000,
-                    memory_limit: 128 * 1024 * 1024,
+                    versionIndex: config.versionIndex,
+                    stdin: testCase.input || ''
                 })
             });
 
             if (!response.ok) {
-                console.error("Piston API failed:", response.status, await response.text());
+                console.error("JDoodle API failed:", response.status, await response.text());
                 throw new Error(`Compiler service unavailable (${response.status})`);
             }
 
             const data = await response.json();
 
-            // data.run contains { stdout, stderr, code, signal, ... }
-            // data.compile contains { stdout, stderr, code, ... } (if compiled)
+            // Handle limits
+            if (data.statusCode === 429) {
+                throw new Error("Daily compiler API limit reached (200 requests/day).");
+            }
 
-            const runOutput = data.run?.stdout || '';
-            const runError = data.run?.stderr || '';
-            const compileError = data.compile?.stderr || ''; // For C/C++ specifically
+            const runOutput = data.output || '';
+            const error = data.error || '';
 
-            // Combine errors
-            const error = compileError || runError;
-
-            // Check correctness
+            // JDoodle returns output as a single string, sometimes containing errors if compilation failed
             const outputTrimmed = runOutput.trim();
             const expectedTrimmed = (testCase.expectedOutput || '').trim();
 
-            // If we are just running without test cases (cases.length === 0 originally), 
-            // we effectively just return the output.
-            // But if we have expectedOutput, we check equality.
             const passed = expectedTrimmed ? outputTrimmed === expectedTrimmed : true;
 
             results.push({
@@ -904,7 +895,7 @@ app.post('/api/compile', authenticateToken, async (req, res) => {
                 output: outputTrimmed,
                 expectedOutput: testCase.expectedOutput,
                 passed,
-                error: error || (data.run?.code !== 0 ? 'Runtime Error' : undefined)
+                error: error || (data.statusCode !== 200 ? 'Execution Error' : undefined)
             });
         }
 
