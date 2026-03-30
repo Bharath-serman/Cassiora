@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Play, Pause } from "lucide-react";
 
 interface ConversationLine {
   speaker: "A" | "B";
@@ -116,9 +117,21 @@ export const ConversationChatPlayer: React.FC<ConversationChatPlayerProps> = ({
           <div ref={chatEndRef} />
         </div>
       )}
-      <div className="flex gap-2 items-center mb-4">
-        <Button size="icon" onClick={handlePlayPause}>
-          {playing ? "Pause" : "Play"}
+      <div className="flex justify-center w-full mt-2 mb-4">
+        <Button 
+          onClick={handlePlayPause}
+          size="lg"
+          className="rounded-full shadow-md gap-2 px-8 py-6 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 transform hover:scale-105 active:scale-95"
+        >
+          {playing ? (
+            <>
+              <Pause className="w-6 h-6 fill-current" /> Pause
+            </>
+          ) : (
+            <>
+              <Play className="w-6 h-6 fill-current" /> Play
+            </>
+          )}
         </Button>
       </div>
     </div>

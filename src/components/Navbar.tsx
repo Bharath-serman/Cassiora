@@ -12,11 +12,11 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center justify-between w-full py-4 px-6 border-b bg-background shadow-sm">
-        <Link to="/" className="font-bold text-xl tracking-tight text-primary">
+      <nav className="flex flex-col md:flex-row md:items-center justify-between w-full py-3 md:py-4 px-4 md:px-6 border-b bg-background shadow-sm gap-3 md:gap-0">
+        <Link to="/" className="font-bold text-xl tracking-tight text-primary shrink-0">
           Cassiora
         </Link>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>*]:shrink-0">
           {/* Communication Test link */}
           <Link to="/communication-test">
             <Button
